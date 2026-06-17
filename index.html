@@ -344,7 +344,8 @@ async function recommend() {
 
   document.getElementById('result-area').style.display = 'none';
 
-  const key     = "AQ.Ab8RN6JpNSqqgJsUawpDRmI5kS65wPo_UW02FZCyAMMfQGBFcQ";
+  //const key     = "AQ.Ab8RN6KETfWI3fNgaRU5QgAKJt43w3JSNnruxpRpcon1AyutDw";
+  const key     = "AQ.Ab8RN6Jn81t0KF2rxQpb_0QoJDsb8FAB10_uNfgVozO255ah9g";
   const need    = document.getElementById('inp-need').value.trim();
   const courses = `구약통독1(모세오경, 시가서), 구약통독1(시가서:아가), 큐티학교, 십계명 2022 하반기, 십계명 2023 하반기,
   느헤미야 기도자학교 제6기, 일대일 제자훈련 동반자반, 책별성경공부(요한계시록), 신약성경 기도묵상 2022 상반기, 신약성경 기도묵상 2024 하반기,
@@ -433,7 +434,7 @@ async function recommend() {
 
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
