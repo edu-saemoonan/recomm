@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>양육 훈련 추천</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #f5f5f0;
+    color: #222;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .header .cross-icon { font-size: 32px; display: block; margin-bottom: 10px; }
+  .header .church-name { font-size: 13px; color: #888; margin-bottom: 6px; }
+  .header h1 { font-size: 24px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+  .header p { font-size: 14px; color: #666; line-height: 1.6; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 14px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group:last-child { margin-bottom: 0; }
+
+  label {
+    font-size: 12px;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  label .opt { font-weight: 400; color: #bbb; }
+
+  input[type="text"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #222;
+    background: #fafafa;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .15s;
+    line-height: 1.6;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #5b4fcf;
+    background: #fff;
+  }
+  textarea { resize: vertical; }
+
+  /* 과정 목록 힌트 박스 */
+  .course-hint {
+    background: #f8f7ff;
+    border: 1px solid #e0dcfc;
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 10px;
+  }
+  .course-hint-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #5b4fcf;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .course-hint details { margin-bottom: 6px; }
+  .course-hint summary {
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 0;
+  }
+  .course-hint summary::-webkit-details-marker { display: none; }
+  .course-hint summary::before {
+    content: '▶';
+    font-size: 9px;
+    color: #999;
+    transition: transform .15s;
+  }
+  .course-hint details[open] summary::before { transform: rotate(90deg); }
+  .course-hint ul {
+    margin: 6px 0 4px 16px;
+    padding: 0;
+  }
+  .course-hint ul li {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 3px;
+    list-style: disc;
+    cursor: pointer;
+    transition: color .1s;
+  }
+  .course-hint ul li:hover { color: #5b4fcf; text-decoration: underline; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #2e1fa3;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    margin-top: 0.5rem;
+  }
+  .btn-submit:hover { background: #3d2fbe; }
+  .btn-submit:active { transform: scale(0.99); }
+  .btn-submit:disabled { background: #bbb; cursor: not-allowed; }
+
+  .result-card {
+    display: none;
+    background: #fff;
+    border: 1.5px solid #5b4fcf;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0eeff;
+  }
+  .result-icon { font-size: 22px; }
+  .result-title { font-size: 16px; font-weight: 700; color: #2e1fa3; }
+  .result-body { font-size: 14px; color: #333; line-height: 1.9; }
+  .result-body strong { color: #2e1fa3; font-weight: 700; }
+  
+  .rank-block {
+    background: #f8f7ff;
+    border-left: 3px solid #5b4fcf;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    margin: 10px 0;
+  }
+  .encourage-block {
+    background: #fffbea;
+    border-left: 3px solid #f5c842;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    margin: 10px 0;
+  }
+
+  .error-box {
+    display: none;
+    background: #fff5f5;
+    border: 1px solid #ffcccc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 1rem;
+    font-size: 13px;
+    color: #c0392b;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 12px;
+    color: #bbb;
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 헤더 -->
+  <div class="header">
+    <span class="cross-icon">✝️</span>
+    <p class="church-name">새문안교회 양육훈련부</p>
+    <h1>양육 훈련 맞춤 추천</h1>
+  </div>
+
+  
+  <!-- 이수 과정 입력 카드 -->
+  <div class="card">
+    <p class="card-title">✅ 지금까지 이수한 과정</p>
+    <div class="form-group">
+      <textarea id="inp-courses" rows="7"
+        placeholder="★★사용자 직접 입력이 아니라 추후 DB에서 가져온 값으로 세팅 예정★★&#10;&#10;구약통독1(모세오경, 시가서), 구약통독1(시가서:아가), 큐티학교, 십계명 2022년 하반기,&#10;십계명 2023년 하반기, 느헤미야 기도자학교 제6기, 일대일성경공부 동반자반,&#10;책별성경공부(요한계시록), 신약성경 기도묵상 2022년 상반기,	신약성경 기도묵상 2024년 하반기, 하사람연습 2025년 하반기, 하사람연습 2026년 상반기, 일대일 양육자반 훈련"
+        oninput="updateCount()"></textarea>
+    </div>
+  </div>
+  
+    <!-- 관심사 -->
+  <div class="card">
+    <p class="card-title">✅ 관심사</p>
+    <div class="form-group">
+      <textarea id="inp-need" rows="4"
+        placeholder="크리스찬 교육·양육 관련하여 관심있는 부분을 기입해 주세요."
+        oninput="updateCount()"></textarea>
+    </div>
+  </div>
+
+  <!-- 제출 버튼 -->
+  <button class="btn-submit" id="btn-submit" onclick="recommend()">
+    ✨ 훈련 추천받기
+  </button>
+
+  <div class="error-box" id="error-area"></div>
+
+  <!-- 결과 카드 -->
+  <div class="result-card" id="result-area">
+    <div class="result-header">
+      <span class="result-icon">📖</span>
+      <span class="result-title" id="result-title">맞춤 훈련 추천 결과</span>
+    </div>
+    <div class="result-body" id="result-body"></div>
+  </div>
+
+  <div class="footer">
+    새문안교회 양육훈련부 | powered by Google Gemini AI
+  </div>
+</div>
+
+<script>
+function addCourse(name) {
+  const ta = document.getElementById('inp-courses');
+  const cur = ta.value.trim();
+  if (cur === '' || cur === '없음') {
+    ta.value = name;
+  } else {
+    if (ta.value.includes(name)) return;
+    ta.value = cur + ', ' + name;
+  }
+  updateCount();
+  ta.focus();
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-area');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('error-area').style.display = 'none';
+}
+
+function formatResult(text) {
+  let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  const lines = html.split('\n');
+  let result = '';
+  let inRank = false;
+  let inEncourage = false;
+  let blockContent = '';
+
+  lines.forEach(line => {
+    const t = line.trim();
+    if (/^(🌟|📖|✨)/.test(t)) {
+      if (inRank)     result += `<div class="rank-block">${blockContent}</div>`;
+      if (inEncourage) result += `<div class="encourage-block">${blockContent}</div>`;
+      inRank = true; inEncourage = false;
+      blockContent = t + '<br>';
+    } else if (/^💬/.test(t)) {
+      if (inRank)     result += `<div class="rank-block">${blockContent}</div>`;
+      if (inEncourage) result += `<div class="encourage-block">${blockContent}</div>`;
+      inRank = false; inEncourage = true;
+      blockContent = t + '<br>';
+    } else if (t === '') {
+      if (inRank || inEncourage) blockContent += '<br>';
+      else result += '<br>';
+    } else {
+      if (inRank || inEncourage) blockContent += t + '<br>';
+      else result += t + '<br>';
+    }
+  });
+
+  if (inRank)     result += `<div class="rank-block">${blockContent}</div>`;
+  if (inEncourage) result += `<div class="encourage-block">${blockContent}</div>`;
+  return result;
+}
+
+async function recommend() {
+  hideError();
+  const btn = document.getElementById('btn-submit');
+  if (btn.disabled) return; 
+
+  document.getElementById('result-area').style.display = 'none';
+
+  const key     = "AQ.Ab8RN6J4Vbv_V7w0arF3V6L972SAho06Ya91cmce4YwVLEXdqg";
+  //const key     = "AQ.Ab8RN6Jn81t0KF2rxQpb_0QoJDsb8FAB10_uNfgVozO255ah9g";
+  const need    = document.getElementById('inp-need').value.trim();
+  const courses = `구약통독1(모세오경, 시가서), 구약통독1(시가서:아가), 큐티학교, 십계명 2022 하반기, 십계명 2023 하반기,
+  느헤미야 기도자학교 제6기, 일대일 제자훈련 동반자반, 책별성경공부(요한계시록), 신약성경 기도묵상 2022 상반기, 신약성경 기도묵상 2024 하반기,
+  하사람연습 2025 하반기, 하사람연습 2026 상반기, 일대일 제자훈련 양육자반`.trim();
+
+  if (!courses) { showError('이수한 과정을 입력해 주세요. (없으면 "없음" 입력)'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> AI가 분석 중입니다...';
+
+  const prompt = `당신은 새문안교회 크리스천 신앙 훈련 전문 목사입니다.
+
+[새문안교회 전체 교육·양육 과정 안내]
+
+■ 1단계 '믿음의 시작'으로 복음을 알고 예수 그리스도를 믿음으로 받아들이는 단계입니다.
+- 새가족양육과정: 새가족 12주 교육 "새 생명의 발걸음", 교회에 처음 오신 분을 위한 기초 과정
+- ECF 기본과정(주기도문): 주님을 만나는 삶, 기도의 의미와 실제 훈련
+- ECF 기본과정(사도신경): 주님을 고백하는 삶, 신론·기독론·성령론·교회론 학습
+- ECF 기본과정(십계명): 제자된 신자의 삶의 이정표
+
+■ 2단계 '관계의 성장'으로 하나님과 동행하고 공동체 안에서 신앙이 자라가는 단계입니다.
+- 예배자학교 (7주): 예배의 바른 의미와 실천
+- QT학교 (8주): 매일 말씀 묵상과 삶 적용
+- 일대일 제자훈련 동반자반(12주): 양육자와 동반자가 함께하는 삶의 변화
+- 느혜미야 기도자학교 (7주): 응답받는 기도, 중보기도자로 세워지는 과정
+- 구약통독 I (모세오경·시가서): 창세기~욥기 등 개관식 학습
+- 구약통독 II (역사서·예언서): 역사서와 예언서의 상호연관성 학습
+- 신약통독: 신약 전체를 한눈에 읽는 훈련
+
+
+■ 3단계 '삶의 변화'로 말씀에 순종하며 일상의 삶 속에서 제자로 살아가는 단계입니다.
+- 기도·영성(ECF I 심화): 영성훈련, 묵상기도, 시편묵상 등
+- 교리·조직신학(ECF II 심화): 기독교강요, 성령론, 종말론 등
+- 기독교윤리·제자도(ECF III 심화): 산상수훈, 영적리더십 등
+- 책별 성경공부: 신구약 각 권별 심화
+- 성경적 재정교육: 성경적 재정교육
+- 하·사·람 연습(12주): 주님을 따르는 삶, 자신을 알고 주님 사랑 안에서 치유·성장
+
+■ 4단계 '사람 세움'으로 다른 사람을 세우고 세상 속에서 복음을 흘려 보내는 단계입니다.
+- 섬김이학교 (7주): 참 섬김의 실천
+- 소그룹리더 훈련(12주): 소그룹 리더로 성장하기 위해 경청, 영성 훈련 과정
+- 바울전도학교 (5주): 복음제시법 훈련
+- 일대일 제자훈련 양육자반(12주): 양육자가 되기 위한 훈련 과장
+- 아버지학교 (5주): 남성 정체성과 가정 회복
+
+
+■ 새문안아카데미 및 기타
+- 교회음악교육원, 교회교사교육원, 새문안상담교육원, 언더우드선교훈련원, 봉사훈련원, 전도훈련원 등
+
+---
+
+[교인 정보]
+- 이수한 과정: ${courses}
+- 관심사: ${need}
+- 직분: 성도
+---
+
+위 정보를 바탕으로 이 교인에게 지금 가장 적합한 다음 단계의 훈련 과정 3가지를 추천해 주세요.
+이 성도님은 특별히 ${need}에 아주 관심과 필요를 많이 느끼시는 분이예요. 참고해서 꼭 필요한 훈련을 추천해 줄 수 있죠? 전문 목사님이시잖아요.
+이미 이수한 과정이나 이와 유사한 성격의 교육은 확실하게 제외하고 추천해야 합니다.
+심화과정은 기본과정을 충분히 수료한 교인들이 주로 참여하는 훈련이므로 심화과정을 많이 수료한 교인에게 기본과정을 추천하지는 마세요.
+
+※ 작성 규칙:
+1. 서론 인사말은 무조건 딱 2문장 이내로 아주 짧게 끝내고 즉시 본론 양식(🌟 1순위 추천)으로 넘어가세요. 서론을 길게 늘어놓지 마십시오.
+2. 아래의 대괄호 양식 및 이모지 구조를 절대로 빠뜨리지 말고 빈칸을 채워 순서대로 답변해야 합니다.
+
+🌟 **1순위 추천: [과정명]**
+- 추천 이유: (이수 이력과 신앙 상태를 정확히 분석해 2~3문장으로 설명)
+- 기간: (몇 주)
+- 이런 분께 추천해요: (한 줄)
+
+📖 **2순위 추천: [과정명]**
+- 추천 이유: (2~3문장)
+- 기간: (몇 주)
+- 이런 분께 추천해요: (한 줄)
+
+✨ **3순위 추천: [과정명]**
+- 추천 이유: (2~3문장)
+- 기간: (몇 주)
+- 이런 분께 추천해요: (한 줄)
+
+💬 **격려의 말씀**
+(성경 말씀 한 구절을 인용하고, 따뜻하게 마무리를 격려하는 2~3문장)
+
+따뜻하고 정중한 기독교적 어조로 문장을 끝까지 완결해 주세요.`;
+
+  try {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { 
+            temperature: 0.7, 
+            maxOutputTokens: 8192 // 모델이 허용하는 물리적인 최대치로 완전 개방했습니다.
+          }
+        })
+      }
+    );
+
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      showError(`API 오류: ${data.error?.message || '네트워크 오류가 발생했습니다.'}`);
+      return;
+    }
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답을 받지 못했습니다.';
+    document.getElementById('result-title').textContent = name ? `${name} 성도님 맞춤 훈련 추천 결과` : '새문안교회 성도님 맞춤 훈련 추천 결과';
+    document.getElementById('result-body').innerHTML = formatResult(text);
+    document.getElementById('result-area').style.display = 'block';
+    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (e) {
+    showError('네트워크 에러가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ 맞춤 훈련 추천받기';
+  }
+}
+</script>
+</body>
+</html>
