@@ -322,12 +322,15 @@ async function recommend() {
   // ═══════════════════════════════════════════════════════════
   // API Key 설정 (구글 계정마다 키를 발급받아 추가하세요)
   // aistudio.google.com → Get API Key → Create API key
+  // "AQ.Ab8RN6Le2Kxcj3O-XOF0gXuHR6ZSkL-9A4cU40SGe1VcANxC1w"
+  // "AQ.Ab8RN6Ijot1Rvh8I8GHHqfC_kjIvcIzk6CKdHQjVzgaekPm32g"
   // ═══════════════════════════════════════════════════════════
   const API_KEYS = [
-    "AQ.Ab8RN6KZnVToqGnf8KA9N4UO2KGH7P0DoTwS49L1NaL_kuRkLQ",  // 계정1
-    "AQ.Ab8RN6J4Vbv_V7w0arF3V6L972SAho06Ya91cmce4YwVLEXdqg",   // 계정2
-    "AQ.Ab8RN6Le2Kxcj3O-XOF0gXuHR6ZSkL-9A4cU40SGe1VcANxC1w",   // 계정3
-	"AQ.Ab8RN6JRg28L__FqL82L8D9DP6yZr5Jk-jIhwk5C4qN-roLeaw"
+    "AQ.Ab8RN6KZnVToqGnf8KA9N4UO2KGH7P0DoTwS49L1NaL_kuRkLQ",
+    "AQ.Ab8RN6J4Vbv_V7w0arF3V6L972SAho06Ya91cmce4YwVLEXdqg",
+    "AQ.Ab8RN6JRg28L__FqL82L8D9DP6yZr5Jk-jIhwk5C4qN-roLeaw",
+	"AQ.Ab8RN6I2Sy0ez58YerEkHFLkly6mzHwuo3OpTtEQiZmzfO9X4g",
+	"AQ.Ab8RN6JpNSqqgJsUawpDRmI5kS65wPo_UW02FZCyAMMfQGBFcQ"
   ];
 
   // ── Rate Limit 관리 (RPM·TPM·RPD 동시 대응) ─────────────────
@@ -368,9 +371,10 @@ async function recommend() {
     return requestQueue;
   }
   const need    = document.getElementById('inp-need').value.trim();
-  const courses = `구약통독1(모세오경, 시가서), 구약통독1(시가서:아가), 큐티학교, 십계명 2022 하반기, 십계명 2023 하반기,
-  느헤미야 기도자학교 제6기, 일대일 제자훈련 동반자반, 책별성경공부(요한계시록), 신약성경 기도묵상 2022 상반기, 신약성경 기도묵상 2024 하반기,
-  하사람연습 2025 하반기, 하사람연습 2026 상반기, 일대일 제자훈련 양육자반`.trim();
+  const courses = `구약통독1(모세오경, 시가서), 구약통독1(시가서:아가), 큐티학교 2025-1학기, 십계명 2022-2, 십계명 2023-2,
+  느헤미야 기도자학교 제6기, 일대일 제자훈련 동반자반 제2기, 책별성경공부(요한계시록) 2021-1, 신약성경 기도묵상 2022-1, 신약성경 기도묵상 2024-2,
+  하사람연습 2025 2, 하사람연습 2026 1, 일대일 제자훈련 양육자반 제9기`.trim();
+  const unComcourses = `산상수훈 2021-2`.trim();
 
   if (!courses) { showError('이수한 과정을 입력해 주세요. (없으면 "없음" 입력)'); return; }
 
@@ -390,9 +394,14 @@ async function recommend() {
       padding:12px 14px;
       margin-bottom:16px;
     ">
-      <p style="font-size:12px;font-weight:700;color:#4a90d9;margin:0 0 8px">✅ 이수 완료 과정</p>
-      <p style="font-size:13px;color:#444;line-height:1.8;margin:0">
+      <p style="font-size:12px;font-weight:700;color:#4a90d9;margin:0 0 4px">✅ 이수 완료 과정</p>
+      <p style="font-size:13px;color:#444;line-height:1.8;margin:0 0 20px">
         ${courses.split(',').map(c => c.trim()).filter(Boolean).join(' &nbsp;·&nbsp; ')}
+      </p>
+	  
+	  <p style="font-size:12px;font-weight:700;color:#4a90d9;margin:0 0 4px">✅ 미이수 과정</p>
+      <p style="font-size:13px;color:#444;line-height:1.8;margin:0">
+        ${unComcourses.split(',').map(c => c.trim()).filter(Boolean).join(' &nbsp;·&nbsp; ')}
       </p>
     </div>
     <div id="streaming-content" style="font-size:14px;color:#333;line-height:1.9;min-height:20px">
@@ -406,7 +415,7 @@ async function recommend() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> AI가 추천 중입니다...';
 
-  const prompt = `당신은 새문안교회 크리스천 신앙 훈련 전문 목사입니다.
+  const prompt = `당신은 새문안교회 크리스천 신앙 훈련 전문가입니다.
 
 [새문안교회 전체 교육·양육 과정 안내]
 
@@ -443,32 +452,38 @@ async function recommend() {
 ■ 새문안아카데미 및 기타
 - 교회음악교육원, 교회교사교육원, 새문안상담교육원, 언더우드선교훈련원, 봉사훈련원, 전도훈련원 등
 
-참고로 직분 체계는 교회 교인으로 드록하면 성도, 그다음이 집사, 안수집사, 권사, 장로의 순서예요.
+교회 직분 체계는 교회 교인으로 등록하면 default가 성도, 그 다음이 집사, 안수집사, 권사, 장로의 순서예요.
 
 ---
-
 [교인 정보]
 - 이수한 과정: ${courses}
+- 신청했으나 미이수 과정 : ${unComcourses}
 - 관심사: ${need}
 - 직분: 성도
+- 이름: 서발해
 ---
 
-위 정보를 바탕으로 이 교인에게 지금 가장 적합한 다음 단계의 훈련 과정 3가지를 추천해 주세요.
-이 성도님은 특별히 ${need}에 아주 관심과 필요를 많이 느끼시는 분이예요.
-이미 이수한 과정이나 이와 유사한 성격의 교육은 확실하게 제외하고 추천해야 합니다. 
-특히 교육 이름은 같은데 뒤에 제00기, 0000 상반기, 0000 하반기, 0000년 상반기, 0000년 하반기 등의 postfix가 붙은 것은 
-해당 postfix를 제거한 것이 훈련명이니 유념하고 절대 이미 수료한 교육은 절대 추천하지 말아야 합니다.
-아무리 중보기도에 관심있는 교인이라도 '느헤미야 기도자학교'를 수료한 사람에게 절대! 절대! Never! 다시 추천하지 말아 주세요. 절대 추천 금지!
-단 한가지 예외는 하·사·람 연습은 중복 수료 가능합니다.
-심화과정을 많이 수료한 교인에게 기본과정을 추천하지 마세요.
-아버지학교는 직분이 집사 이상이며 이름이 남자 이름으로 추정되는 교인에게만 추천해 주세요. 
-한국 여자 이름의 교인에게는 아버지학교를 추천하지 마세요.
-${need}에 관심이 많은 성도님이시니깐, ${need} 관련 교육을 추천하면 더 좋을 것 같아요.
+[절대 추천 금지 규칙 (최우선 준수 사항)]
+1. '이수한 과정' 리스트에 포함된 훈련은 중 [0-9]+기(예: 제6기)가 명시된 훈련은 일회성 교육입니다. 
+사용자가 이미 수료한 특정 기수의 훈련과 이름이 일치하거나, 동일한 훈련의 다른 기수라고 판단되는 경우 절대로 다시 추천하지 마십시오.
+   - 예: '느헤미야 기도자학교 제9기'를 이수한 경우, '느헤미야 기도자학교'라는 명칭이 포함된 모든 훈련은 추천 대상에서 제외합니다.
+   - 예: '일대일 제자훈련 동반자반 제2기'를 이수한 경우, '일대일 제자훈련 동반자반'이라는 명칭이 포함된 과정을 추천하지 마십시오.
+   - 예: '일대일 제자훈련 양육자반 제4기'를 이수한 경우, '일대일 제자훈련 양육자반'이라는 명칭이 포함된 과정을 추천하지 마십시오.
+2. 관심사가 '중보기도' 이더라도 '느헤미야 기도자학교 제[0-9]+기'를 수료한 교인에게는 '느헤미야 기도자학교'라는 명칭이 포함된 모든 훈련은 추천 대상에서 제외합니다.
+3. '미이수 과정'은 추천 가능하나, 이미 이수한 과정과 성격이 중복되는 경우 추천하지 마십시오.
 
+[추천 지침]
+- 위 정보를 바탕으로 이 교인에게 적합한 다음 단계의 훈련 3가지를 추천하십시오.
+- ${need}에 관심이 많은 분이므로 관련 분야를 우선하되, [절대 추천 금지 규칙]을 위반하는 훈련은 절대 제외하십시오.
+- 심화과정을 이미 수료한 교인에게 기본과정을 추천하는 등 단계에 맞지 않는 추천을 피하십시오.
+- 아버지학교는 남자 교인에게만 추천하십시오.
+
+
+당신이 누구인지는 말하지 마세요.
 
 
 ※ 작성 규칙:
-1. 서론 인사말은 딱 1문장 이내로 짧게 끝내고 즉시 본론으로 넘어가세요. 형식적인 인사말은 하지 마세요. 너 자신에 대한 소개나 말은 하지 말아죠.
+1. 서론 인사말은 딱 1문장 이내로 짧게 끝내고 즉시 본론으로 넘어가세요. 형식적인 인사말은 하지 마세요. '환영합니다' 이런 류의 말도 하지 말아 주세요. 너 자신에 대한 소개나 말은 하지 말아죠.
 2. 아래 양식을 반드시 지켜 주세요.
 
 🌟 **1순위 추천: [과정명]**
