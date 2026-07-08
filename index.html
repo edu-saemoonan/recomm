@@ -71,9 +71,9 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 14px;
-    color: #222;
     background: #fafafa;
     font-family: inherit;
+    color: #222;
     outline: none;
     transition: border-color .15s;
     line-height: 1.6;
@@ -242,7 +242,7 @@
     <p class="card-title">✅ 관심사</p>
     <div class="form-group">
       <textarea id="inp-need" rows="4"
-        placeholder="크리스찬 교육·양육 관련하여 관심있는 부분을 기입해 주세요."
+        placeholder="크리스찬 양육·훈련 관련하여 관심있는 사항을 입력해 주세요."
         ></textarea>
     </div>
   </div>
@@ -315,14 +315,15 @@ function formatResult(text) {
 }
 
 // ── API Key 설정 (전역) ──────────────────────────────────────
+//"AQ.Ab8RN6IcHVJzJqZT1my3bVru1Ebcelz5mHyXUJHk1qwuZheoyw",
+//AQ.Ab8RN6IORFl-1vByI4Wukq_DxLYUzAoR_5TAxV1Z_kThpnRINg
+//AQ.Ab8RN6L8I-eSfQrKY3QHLU5zzejXT8fSlKXeLcXSV02L8Vdb6w
+//AQ.Ab8RN6Jh8pYes_XABPgchs6sWXpjfACpmkCIRHr52Qwv6p0mfw
+//AQ.Ab8RN6J4hz_othJqZsNgn13tN6CUhLThAx6o89y_LVOUKTY1_w
 const API_KEYS = [
   "AQ.Ab8RN6LVJhhGfXoHBXMKIap-JCfVNdpN3oNgw7N1XIKCrnQ_Zw",
-  "AQ.Ab8RN6IcHVJzJqZT1my3bVru1Ebcelz5mHyXUJHk1qwuZheoyw",
-  "AQ.Ab8RN6IORFl-1vByI4Wukq_DxLYUzAoR_5TAxV1Z_kThpnRINg",
-  "AQ.Ab8RN6L8I-eSfQrKY3QHLU5zzejXT8fSlKXeLcXSV02L8Vdb6w",
   "AQ.Ab8RN6L29jbTGi7gaasgBA35Lfal663PeSnwFe3cowZi2UlNkg",
-  "AQ.Ab8RN6Jh8pYes_XABPgchs6sWXpjfACpmkCIRHr52Qwv6p0mfw",
-  "AQ.Ab8RN6J4hz_othJqZsNgn13tN6CUhLThAx6o89y_LVOUKTY1_w"
+  "AQ.Ab8RN6JLxPOudq1cGJa68B1jY9JwbU1gmCMrWGEJSfVT2V80KQ"
 ];
 // ── Rate Limit 관리 (전역 유지 - 버튼 클릭 간에도 기록 보존) ──
 const keyLastUsed   = {};   // { key: timestamp }
@@ -484,13 +485,13 @@ ${bannedBlock}
 
 [새문안교회 전체 교육·양육 과정 안내]
 
-■ 1단계 '믿음의 시작'으로 복음을 알고 예수 그리스도를 믿음으로 받아들이는 단계입니다.
+■ 1단계 훈련은 '믿음의 시작'으로 복음을 알고 예수 그리스도를 믿음으로 받아들이는 단계입니다.
 - 새가족양육과정: 새가족 12주 교육 "새 생명의 발걸음", 교회에 처음 오신 분을 위한 기초 과정
 - ECF 기본과정(주기도문): 주님을 만나는 삶, 기도의 의미와 실제 훈련
 - ECF 기본과정(사도신경): 주님을 고백하는 삶, 신론·기독론·성령론·교회론 학습
 - ECF 기본과정(십계명): 제자된 신자의 삶의 이정표
 
-■ 2단계 '관계의 성장'으로 하나님과 동행하고 공동체 안에서 신앙이 자라가는 단계입니다.
+■ 2단계 훈련은 '관계의 성장'으로 하나님과 동행하고 공동체 안에서 신앙이 자라가는 단계입니다.
 - 예배자학교 (7주): 예배의 바른 의미와 실천
 - QT학교 (8주): 매일 말씀 묵상과 삶 적용
 - 일대일 제자훈련 동반자반(12주): 양육자와 동반자가 함께하는 삶의 변화
@@ -499,15 +500,20 @@ ${bannedBlock}
 - 구약통독 II (역사서·예언서): 역사서와 예언서의 상호연관성 학습
 - 신약통독: 신약 전체를 한눈에 읽는 훈련
 
-■ 3단계 '삶의 변화'로 말씀에 순종하며 일상의 삶 속에서 제자로 살아가는 단계입니다.
-- 기도·영성(ECF I 심화): 영성훈련, 묵상기도, 시편묵상 등
-- 교리·조직신학(ECF II 심화): 기독교강요, 성령론, 종말론 등
-- 기독교윤리·제자도(ECF III 심화): 산상수훈, 영적리더십 등
-- 책별 성경공부: 신구약 각 권별 심화
-- 성경적 재정교육: 성경적 재정교육
+■ 3단계 훈련은 '삶의 변화'로 말씀에 순종하며 일상의 삶 속에서 제자로 살아가는 단계입니다.
+- 영성훈련 : 기도·영성(ECF I 심화)
+- 묵상기도 : 기도·영성(ECF I 심화)
+- 시편묵상 : 기도·영성(ECF I 심화)
+- 기독교강요 : 교리·조직신학(ECF II 심화)
+- 성령론 : 교리·조직신학(ECF II 심화)
+- 종말론 : 교리·조직신학(ECF II 심화)
+- 산상수훈 : 기독교윤리·제자도(ECF III 심화)
+- 영적리더십 : 기독교윤리·제자도(ECF III 심화)
+- 신구약 각 권별 심화 : 책별 성경공부
+- 성경적 재정교육 : 성경적인 재정의 원칙, 십일조, 헌금에 따른 신학적 기반을 발견하고 실천
 - 하·사·람 연습(12주): 주님을 따르는 삶, 자신을 알고 주님 사랑 안에서 치유·성장
 
-■ 4단계 '사람 세움'으로 다른 사람을 세우고 세상 속에서 복음을 흘려 보내는 단계입니다.
+■ 4단계 훈련은 '사람 세움'으로 다른 사람을 세우고 세상 속에서 복음을 흘려 보내는 단계입니다.
 - 섬김이학교 (7주): 참 섬김의 실천
 - 소그룹리더 훈련(12주): 소그룹 리더로 성장하기 위해 경청, 영성 훈련 과정
 - 바울전도학교 (5주): 복음제시법 훈련
@@ -592,6 +598,8 @@ ${bannedRaw.map(function(c){ return "  - "+c+" → "+removeKiPostfix(c)+" 전체
         await new Promise(r => setTimeout(r, MIN_INTERVAL_MS - elapsed));
       }
 
+	  console.log('#api key: ' + tryKey);
+	  
       try {
         const r = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse`,
